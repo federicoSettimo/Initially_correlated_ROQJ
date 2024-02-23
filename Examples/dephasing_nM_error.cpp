@@ -79,7 +79,7 @@ int main () {
         out_gamma << gamma(t) << endl;
 
         int Npsi_old = Npsi_p;
-        double p = (double)Npsi_old/((double)Nstates); // fraction in psi
+        double p = (double)Npsi_old/((double)Nstates); // fraction in psi - exact result
         Npsi_p = 0; Npsibar_p = 0;
         for (int i = 0; i < Nstates; ++i) {
             double p_jump = gamma(t)*dt;

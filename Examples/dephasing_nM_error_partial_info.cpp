@@ -83,7 +83,7 @@ int main () {
             double p_jump = gamma(t)*dt;
             if (vec_psi_p[i]) {
                 Npsi_p++;
-                double p = (double)Npsi_p/((double)i+1.); // fraction of states in psi so far
+                double p = (double)Npsi_p/((double)i+1.); // fraction of states in psi so far - only this info needed
                 if (gamma(t) < 0.) {
                     if (p == 0.)
                         p_jump = 1.;
