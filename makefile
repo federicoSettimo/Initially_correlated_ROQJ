@@ -26,3 +26,8 @@ dephasing_2qubits: Examples/dephasing_2qubits.cpp
 	g++ Examples/dephasing_2qubits.cpp -o Examples/dephasing_2qubits.x -std=c++20 -O3 -ffast-math -fno-math-errno
 	./Examples/dephasing_2qubits.x
 	python3 Examples/plot_deph_2qubits.py
+
+Jaynes-Cummings_env_n: Examples/Jaynes-Cummings_env_n.cpp
+	g++ Examples/Jaynes-Cummings_env_n.cpp -o Examples/Jaynes-Cummings_env_n.x -std=c++20 -O3 -ffast-math -fno-math-errno
+	./Examples/Jaynes-Cummings_env_n.x
+	python3 Examples/plot_JC.py
