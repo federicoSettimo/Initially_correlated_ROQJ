@@ -1,6 +1,9 @@
 roqj.o: roqj.h roqj.cpp
 	g++ roqj.cpp -c -o roqj.o -std=c++20 -O3 -ffast-math -fno-math-errno
 
+roqj_pop.o: roqj_pop.cpp roqj_pop.h
+	g++ roqj_pop.cpp -c -o roqj_pop.o -std=c++20 -O3 -ffast-math -fno-math-errno
+
 qubit_ph_cov: roqj.o Examples/qubit_ph_cov.cpp
 	g++ Examples/qubit_ph_cov.cpp roqj.o -o Examples/qubit_ph_cov.x -std=c++20 -O3 -ffast-math -fno-math-errno
 	./Examples/qubit_ph_cov.x
