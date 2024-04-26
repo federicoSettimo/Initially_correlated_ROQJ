@@ -15,6 +15,10 @@ dephasing_nM_partial_info: Examples/dephasing_nM_partial_info.cpp
 	./Examples/dephasing_nM_partial_info.x
 	python3 Examples/plot_deph_nM.py
 
+dephasing_0_discord: Examples/dephasing_0_discord.cpp
+	g++ Examples/dephasing_0_discord.cpp -o Examples/dephasing_0_discord.x -std=c++20 -O3 -ffast-math -fno-math-errno
+	./Examples/dephasing_0_discord.x
+
 error: Examples/dephasing_nM_error.cpp Examples/dephasing_nM_error_partial_info.cpp
 	g++ Examples/dephasing_nM_error.cpp -o Examples/dephasing_nM_error.x -std=c++20 -O3 -ffast-math -fno-math-errno
 	./Examples/dephasing_nM_error.x
@@ -31,3 +35,13 @@ Jaynes-Cummings_env_n: Examples/Jaynes-Cummings_env_n.cpp
 	g++ Examples/Jaynes-Cummings_env_n.cpp -o Examples/Jaynes-Cummings_env_n.x -std=c++20 -O3 -ffast-math -fno-math-errno
 	./Examples/Jaynes-Cummings_env_n.x
 	python3 Examples/plot_JC.py
+
+JC_max_ent: Examples/JC_max_ent.cpp
+	g++ Examples/JC_max_ent.cpp -o Examples/JC_max_ent.x -std=c++20 -O3 -ffast-math -fno-math-errno
+	./Examples/JC_max_ent.x
+	python3 Examples/plot_JC_max_ent.py
+
+Ising: Examples/Ising.cpp
+	g++ Examples/Ising.cpp -o Examples/Ising.x -std=c++20 -O3 -ffast-math -fno-math-errno
+	./Examples/Ising.x
+	python3 Examples/Ising.py
