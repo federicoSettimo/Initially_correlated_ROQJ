@@ -175,7 +175,8 @@ VectorXd qubit_roqj_pop::run_single_iterations (bool verbose) const {
     initial_state_t *= exp(-I*arg(initial_state_t(0)));
     initial_state_t.normalize();
   }
-  cout << endl;
+  if (_verbose)
+    cout << endl;
   return observables;
 }
 
