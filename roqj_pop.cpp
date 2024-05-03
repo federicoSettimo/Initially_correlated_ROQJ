@@ -4,7 +4,8 @@ qubit_roqj_pop::qubit_roqj_pop (int N_states, double t_i, double t_f, double dt,
   srand(0);
   initialize(N_states, t_i, t_f, dt, N_copies, 2, print_trajectory, N_traj_print, verbose, threshold);
   ComplexEigenSolver<MatrixXcd> eigs;
-  MatrixXcd R = J(projector(_initial_state),0.5*(_t_f-_t_i)) + 0.5*(Phi(_initial_state, 0.5*(_t_f-_t_i), false)*(_initial_state.adjoint()) + _initial_state*(Phi(_initial_state, 0.5*(_t_f-_t_i), false).adjoint()));
+  VectorXcd Phi0 = Phi(_initial_state, _t_i, false);
+  MatrixXcd R = J(projector(_initial_state),_t_i) + 0.5*(Phi0*(_initial_state.adjoint()) + _initial_state*(Phi0.adjoint()));
   eigs.compute(R);
   MatrixXcd eigvec = eigs.eigenvectors();
   _eig_1 = eigvec.col(0);
@@ -139,7 +140,7 @@ VectorXd qubit_roqj_pop::run_single_iterations (bool verbose) const {
       if (lambda_2_eig_1 > 0 && z <= lambda_2_eig_1) {
         N_1--; N_2++;
       }
-      else if (lambda_1_init < 0 && z <= -lambda_1_init*(double)N_init/((double)N_1) + lambda_2_eig_1) {
+      else if (lambda_1_init < 0 && z <= -lambda_1_init*(double)N_init/((double)N_1) + abs(lambda_2_eig_1)) {
         N_init++; N_1--;
         if (_verbose)
           cout << "\tReverse jump from eig_1 to initial_state at time " << t << endl;
@@ -157,7 +158,7 @@ VectorXd qubit_roqj_pop::run_single_iterations (bool verbose) const {
       if (lambda_1_eig_2 > 0 && z <= lambda_1_eig_2) {
         N_2--; N_1++;
       }
-      else if (lambda_2_init < 0 && z <= -lambda_2_init*(double)N_init/((double)N_2) + lambda_1_eig_2) {
+      else if (lambda_2_init < 0 && z <= -lambda_2_init*(double)N_init/((double)N_2) + abs(lambda_1_eig_2)) {
         N_init++; N_2--;
         if (_verbose)
           cout << "\tReverse jump from eig_2 to initial_state at time " << t << endl;
@@ -171,7 +172,8 @@ VectorXd qubit_roqj_pop::run_single_iterations (bool verbose) const {
 
     MatrixXcd K = H(t)  - .5*complex<double>(0.,1.)*Gamma(t);
     initial_state_t = initial_state_t - I*_dt*K*initial_state_t - .5*_dt*Phi(initial_state_t,t,false);
-    initial_state_t = initial_state_t.normalized();
+    initial_state_t *= exp(-I*arg(initial_state_t(0)));
+    initial_state_t.normalize();
   }
   cout << endl;
   return observables;
@@ -236,7 +238,8 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
 
     MatrixXcd K = H(t)  - .5*complex<double>(0.,1.)*Gamma(t);
     initial_state_t = initial_state_t - I*_dt*K*initial_state_t - .5*_dt*Phi(initial_state_t,t,false);
-    initial_state_t_dt = initial_state_t_dt.normalized();
+    initial_state_t *= exp(-I*arg(initial_state_t(0)));
+    initial_state_t_dt.normalize();
 
     for (int i = 0; i < _N_traj_print; ++i) {
       out << observable(projector(psi[i])) << " ";
@@ -467,9 +470,9 @@ void qubit_roqj_pop_mixed::get_trajectories (string file_out) {
         else {// Free evolution
           MatrixXcd K = H(t)  - .5*complex<double>(0.,1.)*Gamma(t);
           psi[k] = psi[k] - I*_dt*K*psi[k] - .5*_dt*Phi(psi[k],t,false);
-          psi[k] -= K*psi[k]*complex<double>(0.,1.)*_dt;
         }
-        psi[k] = psi[k].normalized();
+        psi[k] *= exp(-I*arg(psi[k](0)));
+        psi[k].normalize();
       }
     }
     out << endl;
