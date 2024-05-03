@@ -3,29 +3,6 @@
 qubit_roqj_pop::qubit_roqj_pop (int N_states, double t_i, double t_f, double dt, int N_copies, bool print_trajectory, int N_traj_print, bool verbose, double threshold) {
   srand(0);
   initialize(N_states, t_i, t_f, dt, N_copies, 2, print_trajectory, N_traj_print, verbose, threshold);
-  ComplexEigenSolver<MatrixXcd> eigs;
-  VectorXcd Phi0 = Phi(_initial_state, _t_i, false);
-  MatrixXcd R = J(projector(_initial_state),_t_i) + 0.5*(Phi0*(_initial_state.adjoint()) + _initial_state*(Phi0.adjoint()));
-  eigs.compute(R);
-  MatrixXcd eigvec = eigs.eigenvectors();
-  _eig_1 = eigvec.col(0);
-  _eig_2 = eigvec.col(1);
-  
-  // check that both are not nan
-  if (isnan(real(_eig_2(0))) || isnan(real(-_eig_2(0)))) {
-    if (_eig_1(0) != zero)
-      _eig_2 << -conj(_eig_1(1))/conj(_eig_1(0)), 1;
-    else _eig_2 << 1, -conj(_eig_1(0))/conj(_eig_1(1));
-    _eig_2 = _eig_2.normalized();
-  }
-  else if (isnan(real(_eig_1(0))) || isnan(real(-_eig_1(0)))) {
-    if (_eig_2(0) != zero)
-      _eig_1 << -conj(_eig_2(1))/conj(_eig_2(0)), 1;
-    else _eig_1 << 1, -conj(_eig_2(0))/conj(_eig_2(1));
-    _eig_1 = _eig_1.normalized();
-  }
-  if (_verbose)
-    cout << "Post-jump states:\n" << _eig_1 << endl << _eig_2 << endl;
 }
 
 void qubit_roqj_pop::run () {
@@ -478,4 +455,34 @@ void qubit_roqj_pop_mixed::get_trajectories (string file_out) {
     }
     out << endl;
   }
+}
+
+
+void qubit_roqj_pop::set_initial_state_R (const VectorXcd &psi) {
+  set_initial_state(psi);
+
+  ComplexEigenSolver<MatrixXcd> eigs;
+  VectorXcd Phi0 = Phi(_initial_state, _t_i, false);
+  MatrixXcd R = J(projector(_initial_state),_t_i) + 0.5*(Phi0*(_initial_state.adjoint()) + _initial_state*(Phi0.adjoint()));
+  eigs.compute(R);
+  MatrixXcd eigvec = eigs.eigenvectors();
+  _eig_1 = eigvec.col(0);
+  _eig_2 = eigvec.col(1);
+  
+  // check that both are not nan
+  if (isnan(real(_eig_2(0))) || isnan(real(-_eig_2(0)))) {
+    if (_eig_1(0) != zero)
+      _eig_2 << -conj(_eig_1(1))/conj(_eig_1(0)), 1;
+    else _eig_2 << 1, -conj(_eig_1(0))/conj(_eig_1(1));
+    _eig_2 = _eig_2.normalized();
+  }
+  else if (isnan(real(_eig_1(0))) || isnan(real(-_eig_1(0)))) {
+    if (_eig_2(0) != zero)
+      _eig_1 << -conj(_eig_2(1))/conj(_eig_2(0)), 1;
+    else _eig_1 << 1, -conj(_eig_2(0))/conj(_eig_2(1));
+    _eig_1 = _eig_1.normalized();
+  }
+  if (_verbose)
+    cout << "Post-jump states:\n" << _eig_1 << endl << _eig_2 << endl;
+  return;
 }

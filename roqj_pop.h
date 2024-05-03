@@ -31,6 +31,9 @@ public:
 
   // Prints the trajectories
   void get_trajectories (string file_out = "trajectories.txt");
+
+  // Sets initial state and eigenstates of R
+  void set_initial_state_R (const VectorXcd &psi);
 };
 
 
