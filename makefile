@@ -48,3 +48,9 @@ Ising: Examples/Ising.cpp
 	g++ Examples/Ising.cpp -o Examples/Ising.x -std=c++20 -O3 -ffast-math -fno-math-errno
 	./Examples/Ising.x
 	python3 Examples/Ising.py
+
+ph_cov_0_discord: roqj.o roqj_pop.o Examples/ph_cov_0_discord.cpp
+	g++ Examples/ph_cov_0_discord.cpp roqj.o roqj_pop.o -o Examples/ph_cov_0_discord.x -std=c++20 -O3 -ffast-math -fno-math-errno
+	./Examples/ph_cov_0_discord.x
+	#python3 Examples/plot_ph_cov.py "$ \Phi^0_t(Q_x) $" "$ \operatorname{tr}[X \sigma_x] $"
+	#python3 Examples/plot_ph_cov.py "Jaynes-Cummings, $ \Phi^0_t(Q_x) $" "$ \operatorname{tr}[X \sigma_x] $"
