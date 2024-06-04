@@ -215,8 +215,8 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
     }
 
     MatrixXcd K = H(t)  - .5*complex<double>(0.,1.)*Gamma(t);
-    initial_state_t = initial_state_t - I*_dt*K*initial_state_t - .5*_dt*Phi(initial_state_t,t,false);
-    initial_state_t *= exp(-I*arg(initial_state_t(0)));
+    initial_state_t_dt = initial_state_t - I*_dt*K*initial_state_t - .5*_dt*Phi(initial_state_t,t,false);
+    //initial_state_t *= exp(-I*arg(initial_state_t(0)));
     initial_state_t_dt.normalize();
 
     for (int i = 0; i < _N_traj_print; ++i) {
@@ -226,10 +226,10 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
       double z = (double)rand()/((double)RAND_MAX);
 
       if (psi[i] == initial_state_t) {
-        if (lambda_1_init > 0 && z <= lambda_1_init) {
+        if (lambda_1_init > 0 && z <= lambda_1_init*_dt) {
           N_init--; N_1++; psi[i] = _eig_1;
         }
-        else if (lambda_2_init > 0 && z <= lambda_1_init + lambda_2_init) {
+        else if (lambda_2_init > 0 && z <= lambda_1_init*_dt + lambda_2_init*_dt) {
           N_init--; N_2++; psi[i] = _eig_2;
         }
         else {
@@ -238,25 +238,25 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
       }
 
       else if (psi[i] == _eig_1) {
-        if (lambda_2_eig_1 > 0 && z <= lambda_2_eig_1) {
+        if (lambda_2_eig_1 > 0 && z <= lambda_2_eig_1*_dt) {
           N_1--; N_2++; psi[i] = _eig_2;
         }
-        else if (lambda_1_init < 0 && z <= -lambda_1_init*(double)N_init/((double)N_1) + lambda_2_eig_1) {
+        else if (lambda_1_init < 0 && z <= -lambda_1_init*_dt*(double)N_init/((double)N_1) + lambda_2_eig_1*_dt) {
           N_init++; N_1--; psi[i] = initial_state_t_dt;
         }
-        else if (lambda_1_eig_2 < 0 && z >= 1. + lambda_1_eig_2*(double)N_2/((double)N_1)) {
+        else if (lambda_1_eig_2 < 0 && z >= 1. + lambda_1_eig_2*_dt*(double)N_2/((double)N_1)) {
           N_2++; N_1--; psi[i] = _eig_2;
         }
       }
 
       else if (psi[i] == _eig_2) {
-        if (lambda_1_eig_2 > 0 && z <= lambda_1_eig_2) {
+        if (lambda_1_eig_2 > 0 && z <= lambda_1_eig_2*_dt) {
           N_2--; N_1++; psi[i] = _eig_1;
         }
-        else if (lambda_2_init < 0 && z <= -lambda_2_init*(double)N_init/((double)N_2) + lambda_1_eig_2) {
+        else if (lambda_2_init < 0 && z <= -lambda_2_init*_dt*(double)N_init/((double)N_2) + lambda_1_eig_2*_dt) {
           N_init++; N_2--; psi[i] = initial_state_t_dt;
         }
-        else if (lambda_2_eig_1 < 0 && z >= 1. + lambda_2_eig_1*(double)N_2/((double)N_1)) {
+        else if (lambda_2_eig_1 < 0 && z >= 1. + lambda_2_eig_1*_dt*(double)N_2/((double)N_1)) {
           N_1++; N_2--; psi[i] = _eig_1;
         }
       }
