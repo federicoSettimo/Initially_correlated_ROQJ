@@ -14,7 +14,6 @@ void roqj::initialize (int N_states, double t_i, double t_f, double dt, int N_co
 
 roqj::roqj (int N_states, double t_i, double t_f, double dt, int N_copies, int dim_Hilbert_space, bool print_trajectory, int N_traj_print, bool verbose, double threshold) {
   initialize(N_states, t_i, t_f, dt, N_copies, dim_Hilbert_space, print_trajectory, N_traj_print,verbose,threshold);
-  srand(0);
 }
 
 // --- Setter
@@ -336,7 +335,6 @@ void roqj::print_info () const {
 // ------------------------- Qubit ROQJ class -------------------------
 // --- Constructors
 qubit_roqj::qubit_roqj (int N_states, double t_i, double t_f, double dt, int N_copies, bool print_trajectory, int N_traj_print, bool verbose, double threshold) {
-  srand(0);
   initialize(N_states, t_i, t_f, dt, N_copies, 2, print_trajectory, N_traj_print, verbose, threshold);
 }
 
@@ -390,7 +388,6 @@ VectorXcd qubit_roqj::jump (const MatrixXcd &R, double z, const VectorXcd &psi, 
 // ------------------------- Qutrit ROQJ class -------------------------
 // --- Constructors
 qutrit_roqj::qutrit_roqj (int N_states, double t_i, double t_f, double dt, int N_copies, bool print_trajectory, int N_traj_print, bool verbose, double threshold) {
-  srand(0);
   initialize(N_states, t_i, t_f, dt, N_copies, 3, print_trajectory, N_traj_print, verbose, threshold);
 }
 

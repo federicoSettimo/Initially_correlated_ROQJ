@@ -1,7 +1,6 @@
 #include "roqj_pop.h"
 // ------------------------------------- qubit_roqj_pop -------------------------------------
 qubit_roqj_pop::qubit_roqj_pop (int N_states, double t_i, double t_f, double dt, int N_copies, bool print_trajectory, int N_traj_print, bool verbose, double threshold) {
-  srand(0);
   initialize(N_states, t_i, t_f, dt, N_copies, 2, print_trajectory, N_traj_print, verbose, threshold);
 }
 
@@ -216,7 +215,7 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
 
     MatrixXcd K = H(t)  - .5*complex<double>(0.,1.)*Gamma(t);
     initial_state_t_dt = initial_state_t - I*_dt*K*initial_state_t - .5*_dt*Phi(initial_state_t,t,false);
-    //initial_state_t *= exp(-I*arg(initial_state_t(0)));
+    initial_state_t_dt *= exp(-I*arg(initial_state_t_dt(0)));
     initial_state_t_dt.normalize();
 
     for (int i = 0; i < _N_traj_print; ++i) {
@@ -226,10 +225,10 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
       double z = (double)rand()/((double)RAND_MAX);
 
       if (psi[i] == initial_state_t) {
-        if (lambda_1_init > 0 && z <= lambda_1_init*_dt) {
+        if (lambda_1_init > 0 && z <= lambda_1_init) {
           N_init--; N_1++; psi[i] = _eig_1;
         }
-        else if (lambda_2_init > 0 && z <= lambda_1_init*_dt + lambda_2_init*_dt) {
+        else if (lambda_2_init > 0 && z <= lambda_1_init + lambda_2_init) {
           N_init--; N_2++; psi[i] = _eig_2;
         }
         else {
@@ -238,25 +237,25 @@ void qubit_roqj_pop::get_trajectories (string file_out) {
       }
 
       else if (psi[i] == _eig_1) {
-        if (lambda_2_eig_1 > 0 && z <= lambda_2_eig_1*_dt) {
+        if (lambda_2_eig_1 > 0 && z <= lambda_2_eig_1) {
           N_1--; N_2++; psi[i] = _eig_2;
         }
-        else if (lambda_1_init < 0 && z <= -lambda_1_init*_dt*(double)N_init/((double)N_1) + lambda_2_eig_1*_dt) {
+        else if (lambda_1_init < 0 && z <= -lambda_1_init*(double)N_init/((double)N_1) + lambda_2_eig_1) {
           N_init++; N_1--; psi[i] = initial_state_t_dt;
         }
-        else if (lambda_1_eig_2 < 0 && z >= 1. + lambda_1_eig_2*_dt*(double)N_2/((double)N_1)) {
+        else if (lambda_1_eig_2 < 0 && z >= 1. + lambda_1_eig_2*(double)N_2/((double)N_1)) {
           N_2++; N_1--; psi[i] = _eig_2;
         }
       }
 
       else if (psi[i] == _eig_2) {
-        if (lambda_1_eig_2 > 0 && z <= lambda_1_eig_2*_dt) {
+        if (lambda_1_eig_2 > 0 && z <= lambda_1_eig_2) {
           N_2--; N_1++; psi[i] = _eig_1;
         }
-        else if (lambda_2_init < 0 && z <= -lambda_2_init*_dt*(double)N_init/((double)N_2) + lambda_1_eig_2*_dt) {
+        else if (lambda_2_init < 0 && z <= -lambda_2_init*(double)N_init/((double)N_2) + lambda_1_eig_2) {
           N_init++; N_2--; psi[i] = initial_state_t_dt;
         }
-        else if (lambda_2_eig_1 < 0 && z >= 1. + lambda_2_eig_1*_dt*(double)N_2/((double)N_1)) {
+        else if (lambda_2_eig_1 < 0 && z >= 1. + lambda_2_eig_1*(double)N_2/((double)N_1)) {
           N_1++; N_2--; psi[i] = _eig_1;
         }
       }
